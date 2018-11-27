@@ -6,6 +6,7 @@ import com.hncboy.service.UserService;
 import com.hncboy.utils.JSONResult;
 import com.hncboy.utils.MD5Utils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +24,7 @@ import java.util.UUID;
  * Time: 18:07
  */
 @RestController
-@Api(value = "用户注册登录接口", tags = {"注册和登录的Controller"})
+@Api(value = "用户注册登录注销接口", tags = {"注册登录注销的Controller"})
 public class RegisterLoginController extends BasicController {
 
     @Autowired
@@ -96,5 +97,13 @@ public class RegisterLoginController extends BasicController {
         } else {
             return JSONResult.errorMsg("用户名或密码不正确");
         }
+    }
+
+    @ApiOperation(value = "用户注销", notes = "用户注销的接口")
+    @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String", paramType = "query")
+    @PostMapping("/logout")
+    public JSONResult logout(String userId) {
+        redis.del(USER_REDIS_SESSION + ":" + userId);
+        return JSONResult.ok();
     }
 }
