@@ -3,6 +3,7 @@ package com.hncboy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
  * Time: 16:50
  */
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.hncboy"})
+@MapperScan(basePackages = "com.hncboy.mapper")
+@ComponentScan(basePackages = {"com.hncboy", "org.n3r.idworker"})
 public class Application {
 
     public static void main(String[] args) {

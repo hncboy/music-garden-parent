@@ -9,6 +9,6 @@
         <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
         <result column="fans_counts" property="fansCounts" jdbcType="INTEGER"/>
         <result column="follow_counts" property="followCounts" jdbcType="INTEGER"/>
-        <result column="reveive_like_counts" property="reveiveLikeCounts" jdbcType="INTEGER"/>
+        <result column="receive_like_counts" property="receiveLikeCounts" jdbcType="INTEGER"/>
     </resultMap>
 </mapper>
