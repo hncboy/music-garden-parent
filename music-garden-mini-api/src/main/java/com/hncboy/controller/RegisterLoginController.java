@@ -24,7 +24,7 @@ import java.util.UUID;
  * Time: 18:07
  */
 @RestController
-@Api(value = "用户注册登录注销接口", tags = {"注册登录注销的Controller"})
+@Api(value = "用户注册登录注销的接口", tags = {"用户注册登录注销的Controller"})
 public class RegisterLoginController extends BasicController {
 
     @Autowired
