@@ -8,11 +8,13 @@ import com.hncboy.service.VideoService;
 import com.hncboy.utils.FetchVideoCover;
 import com.hncboy.utils.JSONResult;
 import com.hncboy.utils.MergeVideoMp3;
+import com.hncboy.utils.PagedResult;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -124,7 +126,7 @@ public class VideoController extends BasicController {
             String videoNoAudioName = UUID.randomUUID().toString() + ".mp4";
             uploadPathDB = "/" + userId + "/video/" + videoOutputName;
             finalVideoPath = FILE_SPACE + uploadPathDB;
-            String videoNoAudioPath = FILE_SPACE + videoNoAudioName;
+            String videoNoAudioPath = FILE_SPACE + "/" + userId + "/video/" + videoNoAudioName;
 
             System.out.println("videoInputPath = " + videoInputPath);
             System.out.println("finalVideoPath = " + finalVideoPath);
@@ -217,5 +219,28 @@ public class VideoController extends BasicController {
         videoService.updateVideo(videoId, uploadPathDB);
 
         return JSONResult.ok();
+    }
+
+    /**
+     * 分页和搜索查询视频列表
+     * isSaveRecord: 1-需要保存     0-不需要保存，或者为空
+     *
+     * @param video
+     * @param isSaveRecord
+     * @param page
+     * @return
+     */
+    @PostMapping("/showAll")
+    public JSONResult showAll(@RequestBody Videos video, Integer isSaveRecord, Integer page) {
+        if (page == null) {
+            page = 1;
+        }
+        PagedResult result = videoService.getAllVideos(video, isSaveRecord, page, PAGE_SIZE);
+        return JSONResult.ok(result);
+    }
+
+    @PostMapping("/hot")
+    public JSONResult hot() {
+        return JSONResult.ok(videoService.getHotWords());
     }
 }
