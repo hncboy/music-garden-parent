@@ -116,18 +116,24 @@ public class VideoController extends BasicController {
             String mp3InputPath = FILE_SPACE + bgm.getPath();
 
             MergeVideoMp3 tool = new MergeVideoMp3(FFMPEG_EXE);
+            //原video
             String videoInputPath = finalVideoPath;
+            //最终输出的video
             String videoOutputName = UUID.randomUUID().toString() + ".mp4";
+            //没有声音的原video
+            String videoNoAudioName = UUID.randomUUID().toString() + ".mp4";
             uploadPathDB = "/" + userId + "/video/" + videoOutputName;
             finalVideoPath = FILE_SPACE + uploadPathDB;
+            String videoNoAudioPath = FILE_SPACE + videoNoAudioName;
 
-            tool.convertor(videoInputPath, mp3InputPath, videoSeconds, finalVideoPath);
+            System.out.println("videoInputPath = " + videoInputPath);
+            System.out.println("finalVideoPath = " + finalVideoPath);
+            System.out.println("videoNoAudioPath = " + videoNoAudioPath);
+
+            tool.convertor(videoInputPath, mp3InputPath, videoNoAudioPath, videoSeconds, finalVideoPath);
         }
-        System.out.println("uploadPathDB = " + uploadPathDB);
-        System.out.println("finalVideoPath = " + finalVideoPath);
 
         //对视频截图
-// 获取视频信息。
         FetchVideoCover videoInfo = new FetchVideoCover(FFMPEG_EXE);
         try {
             videoInfo.getCover(finalVideoPath, FILE_SPACE + coverPathDB);
