@@ -230,12 +230,18 @@ public class VideoController extends BasicController {
      * @param page
      * @return
      */
-    @PostMapping("/showAll")
-    public JSONResult showAll(@RequestBody Videos video, Integer isSaveRecord, Integer page) {
+    @PostMapping(value = "/showAll")
+    public JSONResult showAll(@RequestBody Videos video, Integer isSaveRecord,
+                              Integer page, Integer pageSize) {
+
         if (page == null) {
             page = 1;
         }
-        PagedResult result = videoService.getAllVideos(video, isSaveRecord, page, PAGE_SIZE);
+        if (pageSize == null) {
+            pageSize = PAGE_SIZE;
+        }
+
+        PagedResult result = videoService.getAllVideos(video, isSaveRecord, page, pageSize);
         return JSONResult.ok(result);
     }
 
@@ -254,5 +260,55 @@ public class VideoController extends BasicController {
     public JSONResult userUnLike(String userId, String videoId, String videoCreatorId) {
         videoService.userUnLikeVideo(userId, videoId, videoCreatorId);
         return JSONResult.ok();
+    }
+
+    /**
+     * 我关注的人发的视频
+     *
+     * @param userId
+     * @param page
+     * @return
+     */
+    @PostMapping("/showMyFollow")
+    public JSONResult showMyFollow(String userId, Integer page) {
+
+        if (StringUtils.isBlank(userId)) {
+            return JSONResult.ok();
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+        int pageSize = 6;
+        PagedResult videosList = videoService.queryMyFollowVideos(userId, page, pageSize);
+
+        return JSONResult.ok(videosList);
+    }
+
+    /**
+     * 我收藏(点赞)过的视频列表
+     *
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("/showMyLike")
+    public JSONResult showMyLike(String userId, Integer page, Integer pageSize) {
+        if (StringUtils.isBlank(userId)) {
+            return JSONResult.ok();
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (pageSize == null) {
+            pageSize = 6;
+        }
+
+        PagedResult videosList = videoService.queryMyLikeVideos(userId, page, pageSize);
+
+        return JSONResult.ok(videosList);
     }
 }
