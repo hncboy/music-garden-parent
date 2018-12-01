@@ -41,8 +41,8 @@ public class MiniInterceptor implements HandlerInterceptor {
           返回false：请求被拦截，返回
           返回true：请求ok，可以继续执行，放行
          */
-        String userId = request.getHeader("userId");
-        String userToken = request.getHeader("userToken");
+        String userId = request.getHeader("headerUserId");
+        String userToken = request.getHeader("headerUserToken");
         if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(userToken)) {
             String uniqueToken = redis.get(USER_REDIS_SESSION + ":" + userId);
             if (StringUtils.isEmpty(uniqueToken) && StringUtils.isBlank(uniqueToken)) {

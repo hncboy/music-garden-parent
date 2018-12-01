@@ -1,14 +1,21 @@
 package com.hncboy.service.impl;
 
+import com.hncboy.mapper.UsersFansMapper;
+import com.hncboy.mapper.UsersLikeVideosMapper;
 import com.hncboy.mapper.UsersMapper;
 import com.hncboy.pojo.Users;
+import com.hncboy.pojo.UsersFans;
+import com.hncboy.pojo.UsersLikeVideos;
 import com.hncboy.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,6 +28,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersMapper userMapper;
+
+    @Autowired
+    private UsersFansMapper usersFansMapper;
+
+    @Autowired
+    private UsersLikeVideosMapper usersLikeVideosMapper;
 
     @Autowired
     private Sid sid;
@@ -69,5 +82,63 @@ public class UserServiceImpl implements UserService {
         criteria.andEqualTo("id", userId);
         Users user = userMapper.selectOneByExample(userExample);
         return user;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public boolean isUserLikeVideo(String userId, String videoId) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(videoId)) {
+            return false;
+        }
+
+        Example example = new Example(UsersLikeVideos.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("videoId", videoId);
+        List<UsersLikeVideos> list = usersLikeVideosMapper.selectByExample(example);
+
+        return list != null && list.size() > 0;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void saveUserFanRelation(String userId, String fanId) {
+        String relId = sid.nextShort();
+
+        UsersFans userFan = new UsersFans();
+        userFan.setId(relId);
+        userFan.setUserId(userId);
+        userFan.setFanId(fanId);
+
+        usersFansMapper.insert(userFan);
+        userMapper.addFansCount(userId);
+        userMapper.addFollowersCount(fanId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void deleteUserFanRelation(String userId, String fanId) {
+        Example example = new Example(UsersFans.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("fanId", fanId);
+
+        usersFansMapper.deleteByExample(example);
+
+        userMapper.reduceFansCount(userId);
+        userMapper.reduceFollowersCount(fanId);
+    }
+
+    @Override
+    public boolean queryIfFollow(String userId, String fanId) {
+        Example example = new Example(UsersFans.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("fanId", fanId);
+        List<UsersFans> list = usersFansMapper.selectByExample(example);
+
+        return list != null && !list.isEmpty();
     }
 }
