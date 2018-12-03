@@ -3,9 +3,11 @@ package com.hncboy.service.impl;
 import com.hncboy.mapper.UsersFansMapper;
 import com.hncboy.mapper.UsersLikeVideosMapper;
 import com.hncboy.mapper.UsersMapper;
+import com.hncboy.mapper.UsersReportMapper;
 import com.hncboy.pojo.Users;
 import com.hncboy.pojo.UsersFans;
 import com.hncboy.pojo.UsersLikeVideos;
+import com.hncboy.pojo.UsersReport;
 import com.hncboy.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersFansMapper usersFansMapper;
+
+    @Autowired
+    private UsersReportMapper usersReportMapper;
 
     @Autowired
     private UsersLikeVideosMapper usersLikeVideosMapper;
@@ -140,5 +146,13 @@ public class UserServiceImpl implements UserService {
         List<UsersFans> list = usersFansMapper.selectByExample(example);
 
         return list != null && !list.isEmpty();
+    }
+
+    @Override
+    public void reportUser(UsersReport userReport) {
+        String urId = sid.nextShort();
+        userReport.setId(urId);
+        userReport.setCreateTime(new Date());
+        usersReportMapper.insert(userReport);
     }
 }

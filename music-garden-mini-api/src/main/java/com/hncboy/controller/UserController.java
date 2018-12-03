@@ -1,6 +1,7 @@
 package com.hncboy.controller;
 
 import com.hncboy.pojo.Users;
+import com.hncboy.pojo.UsersReport;
 import com.hncboy.pojo.vo.PublisherVideo;
 import com.hncboy.pojo.vo.UsersVO;
 import com.hncboy.service.UserService;
@@ -13,10 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -149,5 +147,12 @@ public class UserController extends BasicController {
         }
         userService.deleteUserFanRelation(userId, fanId);
         return JSONResult.ok("取消关注成功");
+    }
+
+    @PostMapping("/reportUser")
+    public JSONResult reportUser(@RequestBody UsersReport userReport) {
+        //保存举报信息
+        userService.reportUser(userReport);
+        return JSONResult.errorMsg("举报成功！");
     }
 }

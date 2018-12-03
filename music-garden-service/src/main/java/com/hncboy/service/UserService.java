@@ -1,6 +1,7 @@
 package com.hncboy.service;
 
 import com.hncboy.pojo.Users;
+import com.hncboy.pojo.UsersReport;
 
 /**
  * Created by IntelliJ IDEA.
@@ -82,4 +83,11 @@ public interface UserService {
      * @return
      */
     boolean queryIfFollow(String userId, String fanId);
+
+    /**
+     * 举报用户
+     *
+     * @param userReport
+     */
+    void reportUser(UsersReport userReport);
 }
