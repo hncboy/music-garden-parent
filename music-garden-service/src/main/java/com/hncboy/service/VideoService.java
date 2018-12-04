@@ -1,5 +1,6 @@
 package com.hncboy.service;
 
+import com.hncboy.pojo.Comments;
 import com.hncboy.pojo.Videos;
 import com.hncboy.utils.PagedResult;
 
@@ -82,4 +83,21 @@ public interface VideoService {
      * @return
      */
     PagedResult queryMyFollowVideos(String userId, Integer page, Integer pageSize);
+
+    /**
+     * 用户留言
+     *
+     * @param comment
+     */
+    void saveComment(Comments comment);
+
+    /**
+     * 留言分页
+     *
+     * @param videoId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PagedResult getAllComments(String videoId, Integer page, Integer pageSize);
 }

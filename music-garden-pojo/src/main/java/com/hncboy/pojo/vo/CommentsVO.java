@@ -1,48 +1,23 @@
-package com.hncboy.pojo;
+package com.hncboy.pojo.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.util.Date;
 
-public class Comments {
+public class CommentsVO {
 
     @Id
     private String id;
 
-    /**
-     * 回复评论的回复者id
-     */
-    @Column(name = "to_user_id")
-    private String toUserId;
-
-    /**
-     * 回复评论的id
-     */
-    @Column(name = "father_comment_id")
-    private String fatherCommentId;
-
-    /**
-     * 视频id
-     */
-    @Column(name = "video_id")
     private String videoId;
-
-    /**
-     * 留言者id
-     */
-    @Column(name = "from_user_id")
     private String fromUserId;
-
-    /**
-     * 评论时间
-     */
-    @Column(name = "create_time")
     private Date createTime;
-
-    /**
-     * 评论内容
-     */
     private String comment;
+
+    private String faceImage;
+    private String nickname;
+    private String toNickname;
+    private String timeAgoStr;
 
     /**
      * @return id
@@ -56,42 +31,6 @@ public class Comments {
      */
     public void setId(String id) {
         this.id = id;
-    }
-
-    /**
-     * 获取回复评论的回复者id
-     *
-     * @return to_user_id - 回复评论的回复者id
-     */
-    public String getToUserId() {
-        return toUserId;
-    }
-
-    /**
-     * 设置回复评论的回复者id
-     *
-     * @param toUserId 回复评论的回复者id
-     */
-    public void setToUserId(String toUserId) {
-        this.toUserId = toUserId;
-    }
-
-    /**
-     * 获取回复评论的id
-     *
-     * @return father_comment_id - 回复评论的id
-     */
-    public String getFatherCommentId() {
-        return fatherCommentId;
-    }
-
-    /**
-     * 设置回复评论的id
-     *
-     * @param fatherCommentId 回复评论的id
-     */
-    public void setFatherCommentId(String fatherCommentId) {
-        this.fatherCommentId = fatherCommentId;
     }
 
     /**
@@ -164,5 +103,37 @@ public class Comments {
      */
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getFaceImage() {
+        return faceImage;
+    }
+
+    public void setFaceImage(String faceImage) {
+        this.faceImage = faceImage;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getTimeAgoStr() {
+        return timeAgoStr;
+    }
+
+    public void setTimeAgoStr(String timeAgoStr) {
+        this.timeAgoStr = timeAgoStr;
+    }
+
+    public String getToNickname() {
+        return toNickname;
+    }
+
+    public void setToNickname(String toNickname) {
+        this.toNickname = toNickname;
     }
 }

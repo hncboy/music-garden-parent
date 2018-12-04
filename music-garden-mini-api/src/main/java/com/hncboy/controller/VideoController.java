@@ -2,6 +2,7 @@ package com.hncboy.controller;
 
 import com.hncboy.enums.VideoStatusEnum;
 import com.hncboy.pojo.Bgm;
+import com.hncboy.pojo.Comments;
 import com.hncboy.pojo.Videos;
 import com.hncboy.service.BgmService;
 import com.hncboy.service.VideoService;
@@ -310,5 +311,31 @@ public class VideoController extends BasicController {
         PagedResult videosList = videoService.queryMyLikeVideos(userId, page, pageSize);
 
         return JSONResult.ok(videosList);
+    }
+
+    @PostMapping("/saveComment")
+    public JSONResult saveComment(@RequestBody Comments comment, String fatherCommentId, String toUserId) {
+        comment.setFatherCommentId(fatherCommentId);
+        comment.setToUserId(toUserId);
+        videoService.saveComment(comment);
+        return JSONResult.ok();
+    }
+
+    @PostMapping("/getVideoComments")
+    public JSONResult getVideoComments(String videoId, Integer page, Integer pageSize) {
+        if (StringUtils.isBlank(videoId)) {
+            return JSONResult.ok();
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+
+        PagedResult list = videoService.getAllComments(videoId, page, pageSize);
+        return JSONResult.ok(list);
     }
 }

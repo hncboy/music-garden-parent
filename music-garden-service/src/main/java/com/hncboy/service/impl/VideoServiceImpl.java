@@ -3,12 +3,15 @@ package com.hncboy.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hncboy.mapper.*;
+import com.hncboy.pojo.Comments;
 import com.hncboy.pojo.SearchRecords;
 import com.hncboy.pojo.UsersLikeVideos;
 import com.hncboy.pojo.Videos;
+import com.hncboy.pojo.vo.CommentsVO;
 import com.hncboy.pojo.vo.VideosVO;
 import com.hncboy.service.VideoService;
 import com.hncboy.utils.PagedResult;
+import com.hncboy.utils.TimeAgoUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +38,9 @@ public class VideoServiceImpl implements VideoService {
     private UsersMapper usersMapper;
 
     @Autowired
+    private CommentsMapper commentMapper;
+
+    @Autowired
     private VideosMapperCustom videosMapperCustom;
 
     @Autowired
@@ -41,6 +48,9 @@ public class VideoServiceImpl implements VideoService {
 
     @Autowired
     private UsersLikeVideosMapper usersLikeVideosMapper;
+
+    @Autowired
+    private CommentsMapperCustom commentMapperCustom;
 
     @Autowired
     private Sid sid;
@@ -164,5 +174,34 @@ public class VideoServiceImpl implements VideoService {
         pagedResult.setRecords(pageList.getTotal());
 
         return pagedResult;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void saveComment(Comments comment) {
+        String id = sid.nextShort();
+        comment.setId(id);
+        comment.setCreateTime(new Date());
+        commentMapper.insert(comment);
+    }
+
+    @Override
+    public PagedResult getAllComments(String videoId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page,pageSize);
+
+        List<CommentsVO> list = commentMapperCustom.queryComments(videoId);
+        for (CommentsVO c :list) {
+            String timeAgo = TimeAgoUtils.format(c.getCreateTime());
+            c.setTimeAgoStr(timeAgo);
+        }
+
+        PageInfo<CommentsVO> pageList = new PageInfo<>(list);
+        PagedResult grid = new PagedResult();
+        grid.setTotal(pageList.getPages());
+        grid.setRows(list);
+        grid.setPage(page);
+        grid.setRecords(pageList.getTotal());
+
+        return grid;
     }
 }
